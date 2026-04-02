@@ -1,0 +1,59 @@
+METHOD1:-
+class Solution {
+    public int findTargetSumWays(int[] nums, int target) {
+        int totalSum = 0;
+        for (int num : nums) {
+            totalSum += num;
+        }
+        // If target is out of possible range
+        if (target > totalSum || target < -totalSum) {
+            return 0;
+        }
+
+        // dp array size = from -totalSum to +totalSum
+        int[] dp = new int[2 * totalSum + 1];
+        
+        // Starting point: sum 0 has 1 way
+        dp[totalSum] = 1;
+
+        for (int num : nums) {
+            int[] next = new int[2 * totalSum + 1];
+
+for (int sum = -totalSum; sum <= totalSum; sum++) {
+if (dp[sum + totalSum] != 0) {
+next[sum + num + totalSum] += dp[sum + totalSum];
+next[sum - num + totalSum] += dp[sum + totalSum];
+            }
+            }
+
+            dp = next;
+        }
+
+        return dp[target + totalSum];
+    }
+}
+METHOD 2:-
+class Solution {
+    public int findTargetSumWays(int[] nums, int target) {
+        return solve(nums, 0, 0, target);
+    }
+
+    int solve(int[] nums, int index, int sum, int target) {
+        
+        // Base case
+        if (index == nums.length) {
+            if (sum == target) {
+                return 1;
+            }
+            return 0;
+        }
+
+        // Choose +
+        int add = solve(nums, index + 1, sum + nums[index], target);
+
+        // Choose -
+        int subtract = solve(nums, index + 1, sum - nums[index], target);
+
+        return add + subtract;
+    }
+}
